@@ -51,7 +51,6 @@ class ConfigAttrDict(AttrDict):
         """
         if _config is None:
             _config = {}
-
         with open(config_file, 'w') as c:
             json.dump(_config, c, indent=4, ensure_ascii=False)
         self.config_path = config_file
@@ -86,11 +85,7 @@ class ConfigAttrDict(AttrDict):
             print(e)
 
 
-config_path = os.path.join(base_path, 'data.cfg')
-config = ConfigAttrDict(config_path, {'debug': False,
-                                      'table': {}})
-
-logger = logger_init(config.debug)
-
 if __name__ == '__main__':
+    config_path = os.path.join(base_path, 'data.cfg')
+    config = ConfigAttrDict(config_path)
     print(config)

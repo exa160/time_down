@@ -23,13 +23,11 @@ def logger_init(debug):
     else:
         log_flag = logging.INFO
 
-
-
     _logger = logging.getLogger(__name__)
 
     _logger.setLevel(level=log_flag)
     formatter = logging.Formatter('%(asctime)s.%(msecs)03d-[%(levelname)s]-[%(filename)s:%(lineno)d]: %(message)s',
-                                datefmt='%Y-%m-%d_%H:%M:%S')
+                                  datefmt='%Y-%m-%d_%H:%M:%S')
     if debug:
         handler = logging.FileHandler(log_path)
         handler.setLevel(log_flag)
@@ -43,4 +41,5 @@ def logger_init(debug):
 
     return _logger
 
-logger = logger_init(False)
+
+# logger = logger_init(False)

@@ -1,7 +1,10 @@
+import logging
 import threading
 import time
+import traceback
 from tkinter import Tk, Label, Menu
 from datetime import datetime, timedelta
+from units.constant import config
 
 
 def get_hours(weekday):
@@ -36,21 +39,24 @@ class TimeShow:  # 实现倒计时
         self._offset_x = 0
         self._offset_y = 0
         self.timeShowWin = Tk()
+        self.confWin = ''
         self.timeShowWin.overrideredirect(True)
-        self.timeShowWin.attributes('-alpha', 1)
+        self.timeShowWin.attributes('-alpha', config.alpha)
         self.timeShowWin.attributes('-topmost', True)
-        self.timeShowWin.attributes('-transparentcolor', 'red')
-        self.time_label = Label(self.timeShowWin, text='倒计时', font=('楷体', 8), fg='black', bg='red')
+        self.timeShowWin.attributes('-transparentcolor', config.background)
+        self.time_label = Label(self.timeShowWin,
+                                text='倒计时',
+                                font=(config.font_type, config.font_size),
+                                fg=config.foreground,
+                                bg=config.background)
         self.time_label.pack(fill='x', anchor='center')
         self.timeShowWin.bind('<Button-1>', self.click_win)
         self.timeShowWin.bind('<B1-Motion>', self.drag_win)
         menu = Menu(self.time_label, tearoff='off')
-        menu.add_cascade(label='设置')
-        menu.add_command(label='退出', command=self.timeShowWin.destroy)
+        menu.add_command(label='设置', command=self.show_config)
+        menu.add_command(label='退出', command=self.quit)
         self.show_menu(menu)
-        self.timeShowWin.geometry(
-            '+' + str(int(self.timeShowWin.winfo_screenwidth() - 130)) + '+' + str(
-                int(self.timeShowWin.winfo_screenheight() - 63)))
+        self.timeShowWin.geometry(f'+{config.pos_x}+{config.pos_y}')
 
         t = threading.Thread(target=self.show)
         t.setDaemon(True)
@@ -88,8 +94,16 @@ class TimeShow:  # 实现倒计时
                     self.timeShowWin.update()
                 time.sleep(0.05)
 
+    def show_config(self):
+        self.confWin = Tk()
+        self.confWin.geometry(f'200x600+{config.pos_x}+{config.pos_y}')
+
     def start(self):
         self.timeShowWin.mainloop()
+
+    def quit(self):
+        config.save()
+        self.timeShowWin.destroy()
 
     def show_menu(self, menu):
         def set_menu(event):
@@ -102,6 +116,7 @@ class TimeShow:  # 实现倒计时
         x = self.timeShowWin.winfo_pointerx() - self._offset_x
         y = self.timeShowWin.winfo_pointery() - self._offset_y
         self.timeShowWin.geometry('+{x}+{y}'.format(x=x, y=y))
+        config.pos_x, config.pos_y = x, y
 
     def click_win(self, event):
         self._offset_x = event.x
@@ -110,5 +125,12 @@ class TimeShow:  # 实现倒计时
 
 if __name__ == '__main__':
     print(start_time())
-    a = TimeShow()
-    a.start()
+    try:
+        a = TimeShow()
+        a.start()
+    except Exception as e:
+        from units.logger import logger_init
+        logger_init(config.debug)
+        logger = logging.getLogger('logger')
+        logger.error(e)
+        logger.error(traceback.format_exc())
