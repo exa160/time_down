@@ -128,6 +128,8 @@ if __name__ == '__main__':
     try:
         a = TimeShow()
         a.start()
+    except KeyboardInterrupt as e:
+        config.save()
     except Exception as e:
         from units.logger import logger_init
         logger_init(config.debug)
