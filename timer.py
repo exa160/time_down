@@ -33,6 +33,8 @@ def diff_time_cal(set_datetime):
 class TimeShow:  # 实现倒计时
 
     def __init__(self):
+        self._offset_x = 0
+        self._offset_y = 0
         self.timeShowWin = Tk()
         self.timeShowWin.overrideredirect(True)
         self.timeShowWin.attributes('-alpha', 1)
@@ -40,7 +42,8 @@ class TimeShow:  # 实现倒计时
         self.timeShowWin.attributes('-transparentcolor', 'red')
         self.time_label = Label(self.timeShowWin, text='倒计时', font=('楷体', 8), fg='black', bg='red')
         self.time_label.pack(fill='x', anchor='center')
-
+        self.timeShowWin.bind('<Button-1>', self.click_win)
+        self.timeShowWin.bind('<B1-Motion>', self.drag_win)
         menu = Menu(self.time_label, tearoff='off')
         menu.add_cascade(label='设置')
         menu.add_command(label='退出', command=self.timeShowWin.destroy)
@@ -69,7 +72,7 @@ class TimeShow:  # 实现倒计时
                     self.time_label[
                         'text'] = f'{hour:02d}: {minute:02d}{":" if index > 1 else " "} {second:02d} {act_index[index]}'
                     self.timeShowWin.update()
-                time.sleep(0.1)
+                time.sleep(0.01)
             else:
                 if next_start_datetime == last_start_datetime:
                     next_start_datetime = start_time()
@@ -83,7 +86,7 @@ class TimeShow:  # 实现倒计时
                                               f'{hour:02d}: {minute:02d}-nextD'
                     # self.time_label['text'] = f'{hour:02d}: {minute:02d}{":" if index > 1 else " "} {second:02d} {act_index[index]}'
                     self.timeShowWin.update()
-                time.sleep(5)
+                time.sleep(0.05)
 
     def start(self):
         self.timeShowWin.mainloop()
@@ -94,6 +97,15 @@ class TimeShow:  # 实现倒计时
             self.timeShowWin.update()
 
         self.time_label.bind('<Button-3>', set_menu)
+
+    def drag_win(self, event):
+        x = self.timeShowWin.winfo_pointerx() - self._offset_x
+        y = self.timeShowWin.winfo_pointery() - self._offset_y
+        self.timeShowWin.geometry('+{x}+{y}'.format(x=x, y=y))
+
+    def click_win(self, event):
+        self._offset_x = event.x
+        self._offset_y = event.y
 
 
 if __name__ == '__main__':
