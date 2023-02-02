@@ -1,4 +1,6 @@
 import os
+import tempfile
+import appdirs
 
 from units.config import ConfigAttrDict, base_path
 
@@ -17,5 +19,12 @@ class Config(ConfigAttrDict):
         self.save()
 
 
-config_path = os.path.join(base_path, 'data.cfg')
+data_path = appdirs.user_data_dir()
+os.makedirs(os.path.join(data_path, 'Timer'), exist_ok=True)
+config_path = os.path.join(data_path, 'Timer', 'data.cfg')
 config = Config(config_path)
+
+if __name__ == '__main__':
+    print(tempfile.gettempdir())
+    print(appdirs.user_data_dir())
+
