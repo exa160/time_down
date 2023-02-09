@@ -3,7 +3,7 @@ import time
 
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QFontDatabase, QFont
-from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QGridLayout
+from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QGridLayout, QMainWindow
 
 from timer import start_time, get_hours, diff_time_cal
 
@@ -22,7 +22,7 @@ def get_font(font_path):
     return QFont(font_name)
 
 
-class CountDown(QWidget):
+class CountDown(QMainWindow):
     def __init__(self):
         super(CountDown, self).__init__()
 
@@ -36,8 +36,10 @@ class CountDown(QWidget):
         text_font.setLetterSpacing(QFont.SpacingType.PercentageSpacing, 88)  # 字间距
         # num_font.setLetterSpacing(QFont.SpacingType.PercentageSpacing, 1)  # 字间距
 
+        self.main_widget = QWidget()
         grid = QGridLayout()
-        self.setLayout(grid)
+        self.main_widget.setLayout(grid)
+        self.setCentralWidget(self.main_widget)
         # grid.setHorizontalSpacing(1)  # Grid布局行间距
         grid.setVerticalSpacing(0)  # Grid布局行间距
         # grid.setContentsMargins(0, 0, 0, 0)     # Grid布局行间距
@@ -78,17 +80,18 @@ class CountDown(QWidget):
         self.l_label.setText('|')
         self.l_label.setAlignment(Qt.AlignmentFlag.AlignRight)
         self.l_label.setFont(num_font)
-        self.l_label.setMargin(-5)  # 内边距
-        self.l_label.setContentsMargins(0, 0, 0, 1000)
+        self.l_label.setMargin(-6)  # 内边距
+        # self.l_label.setContentsMargins(100, 0, 0, 0)  # 边距
         self.l_label.setStyleSheet(f'QLabel{{color:red;font-size:65px ;}}')
 
         self.e_label = QLabel()
-        self.e_label.resize(50, 50)
+        self.e_label.resize(150, 80)
         self.e_label.setProperty('e_line', '6')
         self.e_label.setText(LABEL_4.format(text=27))
         self.e_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self.e_label.setFont(text_font)
-        self.e_label.setStyleSheet(f'QLabel{{font-size:18px ;}}')
+        self.e_label.setFont(num_font)
+        self.e_label.setContentsMargins(3, 0, 0, 0)  # 边距
+        self.e_label.setStyleSheet(f'QLabel{{color:white;font-size:16px ;}}')
 
         # self.e_label.setMargin(-5)  # 内边距
         # self.e_label.setContentsMargins(0, 0, 0, 1000)
