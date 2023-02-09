@@ -6,6 +6,7 @@ from PyQt6.QtGui import QFontDatabase, QFont
 from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QGridLayout, QMainWindow
 
 from timer import start_time, get_hours, diff_time_cal
+from units.constant import config
 
 LABEL_1 = '距摸鱼结束'
 LABEL_2 = '还剩'
@@ -122,6 +123,7 @@ class CountDown(QMainWindow):
                             Qt.WindowType.WindowStaysOnTopHint |   # 窗口置顶
                             Qt.WindowType.SplashScreen)            # 隐藏任务栏图标
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)  # 窗口透明
+        self.setGeometry(config.qt_pos_x, config.qt_pos_y, 180, 50)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:

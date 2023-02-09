@@ -10,6 +10,8 @@ class Config(ConfigAttrDict):
         self.debug = False
         self.pos_x = 0
         self.pos_y = 0
+        self.qt_pos_x = 0
+        self.qt_pos_y = 0
         self.font_type = '楷体'
         self.font_size = 8
         self.foreground = 'black'
