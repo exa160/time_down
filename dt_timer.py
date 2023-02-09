@@ -97,7 +97,7 @@ class CountDown(QMainWindow):
         # self.e_label.setMargin(-5)  # 内边距
         # self.e_label.setContentsMargins(0, 0, 0, 1000)
 
-        grid.addWidget(self.space_label, 1, 0, 4, 8)
+        grid.addWidget(self.space_label, 0, 0, 6, 8)
         grid.addWidget(self.first_line_label, 1, 0, 1, 3)   # 第一行，占3格
         grid.addWidget(self.second_line_label, 2, 2)        # 第二行，占1格
         grid.addWidget(self.second_line_label_2, 2, 6)
@@ -123,23 +123,34 @@ class CountDown(QMainWindow):
                             Qt.WindowType.WindowStaysOnTopHint |   # 窗口置顶
                             Qt.WindowType.SplashScreen)            # 隐藏任务栏图标
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)  # 窗口透明
-        self.setGeometry(config.qt_pos_x, config.qt_pos_y, 180, 50)
+        self.setGeometry(config.qt_pos_x, config.qt_pos_y, 180, 80)
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
+        # print(event.scenePosition(), event.globalPosition(), event.pos(), self.pos())
         if event.buttons() == Qt.MouseButton.LeftButton:
-            self.dragPosition = event.pos() - self.frameGeometry().topLeft()
+            self.dragPosition = self.pos() - event.pos()
             event.accept()
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
         print(type(event))
         if event.buttons() == Qt.MouseButton.LeftButton:
-            self.move(event.pos() - self.dragPosition)
+            self.move(self.dragPosition + event.pos())
             event.accept()
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
         pos = self.frameGeometry().topLeft()
         config.qt_pos_x, config.qt_pos_y = pos.x(), pos.y()
         config.save()
+        event.accept()
+
+    def enterEvent(self, event: QEnterEvent) -> None:
+        self.setWindowOpacity(0.9)
+        self.space_label.setStyleSheet('QLabel{border-radius: 7px; background-color:rgba(31, 32, 34, 80%)}')
+        event.accept()
+
+    def leaveEvent(self, event: QEnterEvent) -> None:
+        self.setWindowOpacity(0.2)
+        self.space_label.setStyleSheet('QLabel{background-color:None}')
         event.accept()
 
 
