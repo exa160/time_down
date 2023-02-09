@@ -2,7 +2,7 @@ import sys
 import time
 
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
-from PyQt6.QtGui import QFontDatabase, QFont
+from PyQt6.QtGui import QFontDatabase, QFont, QEnterEvent, QMouseEvent
 from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QGridLayout, QMainWindow
 
 from timer import start_time, get_hours, diff_time_cal
@@ -30,7 +30,7 @@ class CountDown(QMainWindow):
         self.dragPosition = 0
         self.init_ui()
         self.timer_thread = MyThread()
-        # self.timer_thread.signal.connect(self.set_text_num)
+        self.timer_thread.signal.connect(self.set_text_num)
 
         text_font = get_font('./font/no59.ttf')  # 注意放入字体
         num_font = get_font('./font/1451.otf')
@@ -97,9 +97,9 @@ class CountDown(QMainWindow):
         # self.e_label.setMargin(-5)  # 内边距
         # self.e_label.setContentsMargins(0, 0, 0, 1000)
 
+        grid.addWidget(self.space_label, 1, 0, 4, 8)
         grid.addWidget(self.first_line_label, 1, 0, 1, 3)   # 第一行，占3格
         grid.addWidget(self.second_line_label, 2, 2)        # 第二行，占1格
-        grid.addWidget(self.space_label, 2, 4, 2, 5)
         grid.addWidget(self.second_line_label_2, 2, 6)
         grid.addWidget(self.l_label, 2, 0, 3, 2)            # 第二行，占4格
         grid.addWidget(self.number_label, 1, 3, 2, 3)
@@ -108,15 +108,15 @@ class CountDown(QMainWindow):
         self.setStyleSheet(f'QLabel{{color:white;font-size:30px ;}}')
         self.timer_thread.start()
 
-    def set_text_num(self, text):
-        LABEL_3 = '秒'
+    def set_text_num(self, text, unit_c, unit_e):
+        LABEL_3 = unit_c
 
-        LABEL_MUM = ' {text} '
+        LABEL_MUM = ' {text} '.format(text=text)
         LABEL_4 = 'THE CATCH FISH FINISH\n' \
-                  'IN {text} SECONDS'
+                  'IN {text} {unit_e}'.format(text=text, unit_e=unit_e)
         self.second_line_label_2.setText(LABEL_3)
-        self.number_label.setText(LABEL_MUM.format(text=text))
-        self.e_label.setText(LABEL_4.format(text=text))
+        self.number_label.setText(LABEL_MUM)
+        self.e_label.setText(LABEL_4)
 
     def init_ui(self):
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint |    # 窗口无边框
@@ -125,17 +125,18 @@ class CountDown(QMainWindow):
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)  # 窗口透明
         self.setGeometry(config.qt_pos_x, config.qt_pos_y, 180, 50)
 
-    def mousePressEvent(self, event):
-        if event.button() == Qt.MouseButton.LeftButton:
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        if event.buttons() == Qt.MouseButton.LeftButton:
             self.dragPosition = event.pos() - self.frameGeometry().topLeft()
             event.accept()
 
-    def mouseMoveEvent(self, event):
+    def mouseMoveEvent(self, event: QMouseEvent) -> None:
+        print(type(event))
         if event.buttons() == Qt.MouseButton.LeftButton:
             self.move(event.pos() - self.dragPosition)
             event.accept()
 
-    def mouseReleaseEvent(self, event):
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
         pos = self.frameGeometry().topLeft()
         config.qt_pos_x, config.qt_pos_y = pos.x(), pos.y()
         config.save()
@@ -143,10 +144,27 @@ class CountDown(QMainWindow):
 
 
 class MyThread(QThread):
-    signal = pyqtSignal(str)
+    signal = pyqtSignal(str, str, str)
 
     def __init__(self):
         super(MyThread, self).__init__()
+
+    def send_signal(self, hour, minute, second):
+        if hour > 0:
+            text = f'{hour}'
+            unit_c = '小时'
+            unit_e = 'HOURS'
+        elif minute > 0:
+            text = f'{minute}'
+            unit_c = '分'
+            unit_e = 'MINUTES'
+        elif second >= 0:
+            text = f'{second}'
+            unit_c = '秒'
+            unit_e = 'SECONDS'
+        else:
+            return
+        self.signal.emit(text, unit_c, unit_e)
 
     def run(self):
         last_start_datetime = start_time()
@@ -159,14 +177,14 @@ class MyThread(QThread):
             now, hour, minute, second = diff_time_cal(next_start_datetime)
             if now.hour <= get_hours(now.weekday()):
                 if second != temp_second:
-                    self.signal.emit(f'{second}')
+                    self.send_signal(hour, minute, second)
                     temp_second = second
             else:
                 if next_start_datetime == last_start_datetime:
                     next_start_datetime = start_time()
                     now, hour, minute, second = diff_time_cal(next_start_datetime)
                 if second != temp_second:
-                    self.signal.emit(f'{second}')
+                    self.send_signal(hour, minute, second)
                     temp_second = second
 
             time.sleep(0.05)
