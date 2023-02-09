@@ -132,7 +132,6 @@ class CountDown(QMainWindow):
             event.accept()
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
-        print(type(event))
         if event.buttons() == Qt.MouseButton.LeftButton:
             self.move(self.dragPosition + event.pos())
             event.accept()
