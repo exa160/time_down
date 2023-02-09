@@ -134,7 +134,12 @@ class CountDown(QMainWindow):
         if event.buttons() == Qt.MouseButton.LeftButton:
             self.move(event.pos() - self.dragPosition)
             event.accept()
-    # def
+
+    def mouseReleaseEvent(self, event):
+        pos = self.frameGeometry().topLeft()
+        config.qt_pos_x, config.qt_pos_y = pos.x(), pos.y()
+        config.save()
+        event.accept()
 
 
 class MyThread(QThread):
