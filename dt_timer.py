@@ -8,14 +8,6 @@ from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QGridLayout, QMainWin
 from timer import start_time, get_hours, diff_time_cal
 from units.constant import config
 
-LABEL_1 = '距摸鱼结束'
-LABEL_2 = '还剩'
-LABEL_3 = '分'
-
-LABEL_MUM = ' {text} '
-LABEL_4 = 'THE CATCH FISH FINISH\n' \
-          'IN {text} MINUTES'
-
 
 def get_font(font_path):
     font_data = QFontDatabase.addApplicationFont(font_path)
@@ -27,7 +19,7 @@ class CountDown(QMainWindow):
     def __init__(self):
         super(CountDown, self).__init__()
 
-        self.dragPosition = 0
+        self.diff_pos = None
         self.init_ui()
         self.timer_thread = MyThread()
         self.timer_thread.signal.connect(self.set_text_num)
@@ -51,23 +43,23 @@ class CountDown(QMainWindow):
 
         self.first_line_label = QLabel()
         self.first_line_label.setProperty('first_line', '1')
-        self.first_line_label.setText(LABEL_1)
+        self.first_line_label.setText(config.qt_text.get('LABEL_1'))
         self.first_line_label.setFont(text_font)
 
         self.second_line_label = QLabel()
         self.second_line_label.setProperty('second_line', '2')
-        self.second_line_label.setText(LABEL_2)
+        self.second_line_label.setText(config.qt_text.get('LABEL_2'))
         self.second_line_label.setFont(text_font)
 
         self.second_line_label_2 = QLabel()
         self.second_line_label_2.setProperty('third_line', '4')
-        self.second_line_label_2.setText(LABEL_3)
+        self.second_line_label_2.setText(config.qt_text.get('LABEL_3'))
         self.second_line_label_2.setFont(text_font)
 
         self.number_label = QLabel()
         self.number_label.resize(1, 1)
         self.number_label.setProperty('number_line', '3')
-        self.number_label.setText(LABEL_MUM.format(text=27))
+        self.number_label.setText(config.qt_text.get('LABEL_NUM').format(text=27))
         self.number_label.setFont(num_font)
         self.number_label.setAlignment(Qt.AlignmentFlag.AlignBottom |
                                        Qt.AlignmentFlag.AlignRight)
@@ -88,7 +80,7 @@ class CountDown(QMainWindow):
         self.e_label = QLabel()
         self.e_label.resize(150, 80)
         self.e_label.setProperty('e_line', '6')
-        self.e_label.setText(LABEL_4.format(text=27))
+        self.e_label.setText(config.qt_text.get('LABEL_4').format(text=27, unit='MINUTES'))
         self.e_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.e_label.setFont(num_font)
         self.e_label.setContentsMargins(3, 0, 0, 0)  # 边距
@@ -109,14 +101,9 @@ class CountDown(QMainWindow):
         self.timer_thread.start()
 
     def set_text_num(self, text, unit_c, unit_e):
-        LABEL_3 = unit_c
-
-        LABEL_MUM = ' {text} '.format(text=text)
-        LABEL_4 = 'THE CATCH FISH FINISH\n' \
-                  'IN {text} {unit_e}'.format(text=text, unit_e=unit_e)
-        self.second_line_label_2.setText(LABEL_3)
-        self.number_label.setText(LABEL_MUM)
-        self.e_label.setText(LABEL_4)
+        self.second_line_label_2.setText(unit_c)
+        self.number_label.setText(config.qt_text.get('LABEL_NUM').format(text=text))
+        self.e_label.setText(config.qt_text.get('LABEL_4').format(text=text, unit=unit_e))
 
     def init_ui(self):
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint |    # 窗口无边框
