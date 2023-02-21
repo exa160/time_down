@@ -2,7 +2,7 @@ import os
 import tempfile
 import appdirs
 
-from units.config import ConfigAttrDict, base_path
+from units.config import ConfigAttrDict
 
 
 class Config(ConfigAttrDict):

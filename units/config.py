@@ -6,8 +6,8 @@ from units.logger import *
 if getattr(sys, 'frozen', False):  # 打包静态资源问题
     base_path = sys._MEIPASS
 else:
-    # base_path = os.path.abspath(".")
-    base_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+    base_path = os.path.abspath(".")
+    # base_path = os.path.dirname(os.path.realpath(sys.argv[0]))
 
 cur_path = os.path.dirname(os.path.realpath(sys.argv[0]))
 

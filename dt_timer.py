@@ -1,3 +1,4 @@
+import os.path
 import sys
 import time
 
@@ -6,6 +7,7 @@ from PyQt6.QtGui import QFontDatabase, QFont, QEnterEvent, QMouseEvent
 from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QGridLayout, QMainWindow
 
 from timer import start_time, get_hours, diff_time_cal
+from units.config import base_path
 from units.constant import config
 
 
@@ -24,8 +26,8 @@ class CountDown(QMainWindow):
         self.timer_thread = MyThread()
         self.timer_thread.signal.connect(self.set_text_num)
 
-        text_font = get_font('./font/no59.ttf')  # 注意放入字体
-        num_font = get_font('./font/1451.otf')
+        text_font = get_font(os.path.join(base_path, 'font', 'no59.ttf'))  # 注意放入字体
+        num_font = get_font(os.path.join(base_path, 'font', '1451.otf'))
         text_font.setLetterSpacing(QFont.SpacingType.PercentageSpacing, 88)  # 字间距
         # num_font.setLetterSpacing(QFont.SpacingType.PercentageSpacing, 1)  # 字间距
 
