@@ -4,8 +4,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFontDatabase, QFont, QEnterEvent
 from PyQt6.QtWidgets import QLabel, QMainWindow, QWidget, QGridLayout
 
-from units.config import base_path
-from units.constant import config
+from units import base_path, config
 
 
 class LabelGui(QMainWindow):
