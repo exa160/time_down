@@ -27,9 +27,10 @@ def diff_time_cal(set_datetime):
     now = datetime.now()
     diff = set_datetime - now
     day = diff.days
-    hour = diff.seconds // 3600 + day * 3600 * 24
-    minute = (diff.seconds % 3600) // 60
-    second = (diff.seconds % 3600) % 60
+    seconds = diff.seconds + day * 3600 * 24
+    hour = seconds // 3600
+    minute = (seconds % 3600) // 60
+    second = (seconds % 3600) % 60
     return now, hour, minute, second
 
 

@@ -134,7 +134,6 @@ class CountDown(QMainWindow):
 
     def contextMenuEvent(self, event):
         context_menu = QMenu(self)
-        context_menu
         menu_setting = context_menu.addAction("设置")
         menu_quit = context_menu.addAction("退出")
         action = context_menu.exec(self.mapToGlobal(event.pos()))
@@ -180,7 +179,7 @@ class MyThread(QThread):
     def run(self):
         last_start_datetime = start_time()
         next_start_datetime = last_start_datetime
-        temp_second = 0
+        temp_hour, temp_minute, temp_second = 0, 0, 0
 
         while True:
             if next_start_datetime != last_start_datetime:
