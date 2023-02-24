@@ -4,7 +4,7 @@ import time
 
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QFontDatabase, QFont, QEnterEvent, QMouseEvent
-from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QGridLayout, QMainWindow
+from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QGridLayout, QMainWindow, QMenu
 
 from timer import start_time, get_hours, diff_time_cal
 from units.config import base_path
@@ -32,6 +32,7 @@ class CountDown(QMainWindow):
         # num_font.setLetterSpacing(QFont.SpacingType.PercentageSpacing, 1)  # 字间距
 
         self.main_widget = QWidget()
+
         grid = QGridLayout()
         self.main_widget.setLayout(grid)
         self.setCentralWidget(self.main_widget)
@@ -130,6 +131,17 @@ class CountDown(QMainWindow):
         config.qt_pos_x, config.qt_pos_y = pos.x(), pos.y()
         config.save()
         event.accept()
+
+    def contextMenuEvent(self, event):
+        context_menu = QMenu(self)
+        context_menu
+        menu_setting = context_menu.addAction("设置")
+        menu_quit = context_menu.addAction("退出")
+        action = context_menu.exec(self.mapToGlobal(event.pos()))
+        if action == menu_setting:
+            pass
+        elif action == menu_quit:
+            QApplication.instance().quit()
 
     def enterEvent(self, event: QEnterEvent) -> None:
         self.setWindowOpacity(0.9)
