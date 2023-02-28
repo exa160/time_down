@@ -20,7 +20,7 @@ class CountDown(LabelGui):
         self.config_window.hide()
 
         self.init_ui()
-        self.timer_thread = MyThread()
+        self.timer_thread = TimerThread()
         self.timer_thread.signal.connect(self.set_text_num)
         self.timer_thread.start()
 
@@ -68,11 +68,11 @@ class CountDown(LabelGui):
             QApplication.instance().quit()
 
 
-class MyThread(QThread):
+class TimerThread(QThread):
     signal = pyqtSignal(str, str, str)
 
     def __init__(self):
-        super(MyThread, self).__init__()
+        super(TimerThread, self).__init__()
 
     def send_signal(self, hour, minute, second):
         if hour > 0:

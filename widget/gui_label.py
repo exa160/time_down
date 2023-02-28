@@ -125,12 +125,12 @@ class LabelGui(QMainWindow):
     # def set_grid_pos(self, grid):
 
     def enterEvent(self, event: QEnterEvent) -> None:
-        self.setWindowOpacity(0.9)
+        self.setWindowOpacity(config.qt_show_alpha)
         self.space_label.setStyleSheet('QLabel{border-radius: 7px; background-color:rgba(31, 32, 34, 80%)}')
         event.accept()
 
     def leaveEvent(self, event: QEnterEvent) -> None:
-        self.setWindowOpacity(0.2)
+        self.setWindowOpacity(config.qt_hide_alpha)
         self.space_label.setStyleSheet('QLabel{background-color:None}')
         event.accept()
 

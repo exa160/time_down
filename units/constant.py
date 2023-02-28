@@ -10,13 +10,15 @@ class Config(ConfigAttrDict):
         self.debug = False
         self.pos_x = 0
         self.pos_y = 0
-        self.qt_pos_x = 0
-        self.qt_pos_y = 0
         self.font_type = '楷体'
         self.font_size = 8
         self.foreground = 'black'
         self.background = 'red'
         self.alpha = 1
+        self.qt_pos_x = 0
+        self.qt_pos_y = 0
+        self.qt_show_alpha = 0.9
+        self.qt_hide_alpha = 0.05
 
         self.qt_text = dict(LABEL_1='距摸鱼结束',
                             LABEL_2='还剩',
