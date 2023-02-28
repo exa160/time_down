@@ -7,8 +7,8 @@ from PyQt6.QtGui import QMouseEvent
 from PyQt6.QtWidgets import QApplication, QMenu
 
 from timer import start_time, get_hours, diff_time_cal
-from units.constant import config
-from widget.gui_label import LabelGui
+from units import config
+from widget import ConfigWindow, LabelGui
 
 
 class CountDown(LabelGui):
@@ -16,6 +16,8 @@ class CountDown(LabelGui):
         super(CountDown, self).__init__()
 
         self.diff_pos = None    # 点击组件时相对组件左上角位置
+        self.config_window = ConfigWindow()
+        self.config_window.hide()
 
         self.init_ui()
         self.timer_thread = MyThread()
@@ -28,6 +30,15 @@ class CountDown(LabelGui):
                             Qt.WindowType.SplashScreen)            # 隐藏任务栏图标
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)  # 窗口透明
         self.setGeometry(config.qt_pos_x, config.qt_pos_y, 180, 80)
+
+    def show_config(self):
+        if self.config_window.isHidden():
+            self.config_window.show()
+
+        else:
+            # self.config_window.close()  # Close window.
+            # self.config_window = None  # Discard reference.
+            self.config_window.hide()  # Discard reference.
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         # print(event.scenePosition(), event.globalPosition(), event.pos(), self.pos())
@@ -52,7 +63,7 @@ class CountDown(LabelGui):
         menu_quit = context_menu.addAction("退出")
         action = context_menu.exec(self.mapToGlobal(event.pos()))
         if action == menu_setting:
-            pass
+            self.show_config()
         elif action == menu_quit:
             QApplication.instance().quit()
 
