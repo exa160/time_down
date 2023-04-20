@@ -29,7 +29,7 @@ class Config(ConfigAttrDict):
                             LABEL_NUM=' {text} ',
                             LABEL_4='THE TOUCHING FISH FINISH\nIN {text} {unit}')
         self.dict_init(new_config)
-        self.s0ave()
+        self.save()
 
 
 data_path = appdirs.user_data_dir()
